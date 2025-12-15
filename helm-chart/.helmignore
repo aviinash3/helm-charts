@@ -25,9 +25,9 @@
 .helm/
 *.tgz
 # Kubernetes (exclude manifests in root, but keep Chart.yaml and values.yaml)
-deployment.yaml
-ingress.yaml
-service.yaml
+/deployment.yaml
+/ingress.yaml
+/service.yaml
 # Documentation
 README.md
 LICENSE

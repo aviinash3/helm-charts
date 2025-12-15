@@ -23,7 +23,7 @@
 .helm/
 *.tgz
 # Kubernetes (exclude manifests in root, but keep Chart.yaml and values.yaml)
-deployment.yaml
-service.yaml
-virtual-service.yaml
+/deployment.yaml
+/service.yaml
+/virtual-service.yaml
 

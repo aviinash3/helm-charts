@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.deployment.name | default .Release.Name }}
   namespace: {{ .Values.deployment.namespace }}
   labels:
-    app: {{ .Values.deployment.name | default (printf "%s-%s" .Release.Name .Values.name) }}
+    app: {{ .Values.deployment.name | default .Release.Name }}
     {{- if .Values.deployment.labels }}
     {{- toYaml .Values.deployment.labels | nindent 4 }}
     {{- end }}
@@ -14,11 +14,11 @@ spec:
     {{- toYaml .Values.deployment.strategy | nindent 4 }}
   selector:
     matchLabels:
-      app: {{ .Values.deployment.name | default (printf "%s-%s" .Release.Name .Values.name) }}
+      app: {{ .Values.deployment.name | default .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.deployment.name | default (printf "%s-%s" .Release.Name .Values.name) }}
+        app: {{ .Values.deployment.name | default .Release.Name }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -27,7 +27,7 @@ spec:
         {{- end }}
       {{- end }}
       containers:
-        - name: {{ .Values.deployment.name | default (printf "%s-%s" .Release.Name .Values.name) }}
+        - name: {{ .Values.deployment.name | default .Release.Name }}
           image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.container.command }}
@@ -62,7 +62,7 @@ spec:
           envFrom:
             {{- toYaml .Values.container.envFrom | nindent 12 }}
           {{- end }}
-          {{- if .Values.resources }}
+          {{- if and .Values.resources (or .Values.resources.requests .Values.resources.limits) }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}

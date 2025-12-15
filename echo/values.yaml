@@ -26,11 +26,10 @@ image:
 # Container configuration
 container:
   # Ports configuration (optional - leave empty if no ports needed)
-  ports: []
-    # Example with single port:
-    # - name: http
-    #   containerPort: 5678
-    #   protocol: TCP
+  ports:
+    - name: http
+      containerPort: 5678
+      protocol: TCP
     # Example with multiple ports:
     # - name: http
     #   containerPort: 8080
@@ -47,9 +46,9 @@ container:
     # - echo "Starting app"
   
   # Args to pass to command (optional - leave empty if not needed)
-  args: []
+  args:
+    - -text="Hello, World!"
     # Example:
-    # - -text="Hello, World!"
     # - --port=8080
   
   # Environment variables (optional)
@@ -72,14 +71,13 @@ container:
     #     name: app-secrets
 
 # Resource limits and requests (optional - leave empty if not needed)
-resources: {}
-  # Example:
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # limits:
-  #   cpu: 200m
-  #   memory: 256Mi
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
 
 # Service configuration
 service:
