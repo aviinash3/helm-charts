@@ -1,0 +1,26 @@
+{{- if .Values.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.name | default (.Values.deployment.name | default .Release.Name) }}
+  namespace: {{ .Values.service.namespace | default (.Values.namespace.name | default (.Values.deployment.name | default .Release.Name)) }}
+  labels:
+    app: {{ .Values.deployment.name | default .Release.Name }}
+    {{- if .Values.service.labels }}
+    {{- toYaml .Values.service.labels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.service.annotations }}
+  annotations:
+    {{- toYaml .Values.service.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.service.type | default "ClusterIP" }}
+  sessionAffinity: {{ .Values.service.sessionAffinity }}
+  selector:
+    app: {{ .Values.deployment.name | default .Release.Name }}
+  ports:
+    - name: {{ .Values.service.protocol | lower }}
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: {{ .Values.service.protocol }}
+{{- end }}

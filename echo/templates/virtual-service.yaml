@@ -1,0 +1,37 @@
+{{- if .Values.virtualService.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ printf "%s-vs" (.Values.virtualService.name | default (.Values.deployment.name | default .Release.Name)) }}
+  namespace: {{ .Values.virtualService.namespace | default (.Values.namespace.name | default (.Values.deployment.name | default .Release.Name)) }}
+  labels:
+    app: {{ .Values.deployment.name | default .Release.Name }}
+    {{- if .Values.virtualService.labels }}
+    {{- toYaml .Values.virtualService.labels | nindent 4 }}
+    {{- end }}
+spec:
+  hosts:
+    {{- if .Values.virtualService.hosts }}
+    {{- toYaml .Values.virtualService.hosts | nindent 4 }}
+    {{- else }}
+    - "ingress.dev.aks.wsi.internal"
+    {{- end }}
+  gateways:
+    {{- if .Values.virtualService.gateways }}
+    {{- toYaml .Values.virtualService.gateways | nindent 4 }}
+    {{- else }}
+    - aks-istio-ingress/internal-cluster-gw
+    {{- end }}
+  http:
+    {{- range .Values.virtualService.http }}
+    - match:
+        {{- toYaml .match | nindent 8 }}
+      route:
+        {{- range .route }}
+        - destination:
+            host: {{ if .destination.host }}{{ .destination.host }}{{ else }}{{ $.Values.service.name | default ($.Values.deployment.name | default $.Release.Name) }}.{{ $.Values.service.namespace | default ($.Values.namespace.name | default ($.Values.deployment.name | default $.Release.Name)) }}.svc.cluster.local{{ end }}
+            port:
+              number: {{ .destination.port.number | default $.Values.service.port }}
+        {{- end }}
+    {{- end }}
+{{- end }}

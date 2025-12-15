@@ -1,0 +1,135 @@
+# Default values for generic deployment chart
+# This is a YAML-formatted file.
+
+# Deployment metadata
+deployment:
+  name: ""  # Leave empty to use: release-name-name, or specify custom name
+  namespace: "core"
+  labels: {}  # Additional labels for deployment metadata
+    # app.kubernetes.io/name: myapp
+    # app.kubernetes.io/instance: myinstance
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+
+# Image configuration
+image:
+  repository: hashicorp/http-echo
+  tag: "latest"
+  pullPolicy: IfNotPresent
+  pullSecrets:
+    - name: demoappsecret
+
+# Container configuration
+container:
+  # Ports configuration (optional - leave empty if no ports needed)
+  ports: []
+    # Example with single port:
+    # - name: http
+    #   containerPort: 5678
+    #   protocol: TCP
+    # Example with multiple ports:
+    # - name: http
+    #   containerPort: 8080
+    #   protocol: TCP
+    # - name: metrics
+    #   containerPort: 9090
+    #   protocol: TCP
+  
+  # Command to execute (optional - leave empty to use image default)
+  command: []
+    # Example:
+    # - /bin/sh
+    # - -c
+    # - echo "Starting app"
+  
+  # Args to pass to command (optional - leave empty if not needed)
+  args: []
+    # Example:
+    # - -text="Hello, World!"
+    # - --port=8080
+  
+  # Environment variables (optional)
+  env: []
+    # Example:
+    # - name: ENV_VAR
+    #   value: "value"
+    # - name: CONFIG_PATH
+    #   valueFrom:
+    #     configMapKeyRef:
+    #       name: app-config
+    #       key: config-path
+  
+  # Environment variables from ConfigMap/Secret (optional)
+  envFrom: []
+    # Example:
+    # - configMapRef:
+    #     name: app-config
+    # - secretRef:
+    #     name: app-secrets
+
+# Resource limits and requests (optional - leave empty if not needed)
+resources: {}
+  # Example:
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # limits:
+  #   cpu: 200m
+  #   memory: 256Mi
+
+# Service configuration
+service:
+  enabled: true
+  name: ""  # Leave empty to use deployment name, or specify custom name
+  namespace: ""  # Leave empty to use: namespace.name -> deployment.name -> default
+  type: ""  # Leave empty to default to ClusterIP, or specify: ClusterIP, NodePort, LoadBalancer
+  port: 8080
+  targetPort: 5678  # Should match container port if ports are defined
+  protocol: TCP
+  annotations: {}
+  sessionAffinity: None
+  labels: {}  # Additional labels for service
+
+# VirtualService configuration (Istio) - optional
+virtualService:
+  enabled: true
+  name: ""  # Leave empty to use: deployment-name-vs, or specify custom name
+  namespace: ""  # Leave empty to use: namespace.name -> deployment.name -> default
+  labels: {}  # Additional labels for VirtualService
+  hosts: []  # Leave empty to use default: ["ingress.dev.aks.wsi.internal"]
+    # Example:
+    # - "ingress.dev.aks.wsi.internal"
+    # - "another.host.com"
+  gateways: []  # Leave empty to use default: ["aks-istio-ingress/internal-cluster-gw"]
+    # Example:
+    # - aks-istio-ingress/internal-cluster-gw
+    # - another-gateway/namespace
+  http:
+    - match:
+        - uri:
+            prefix: /echo
+      route:
+        - destination:
+            host: ""  # Leave empty to auto-generate: service-name.namespace.svc.cluster.local, or specify custom host
+            port:
+              number: 8080
+
+# Horizontal Pod Autoscaler - optional
+autoscaling:
+  enabled: false
+  name: ""  # Leave empty to use: hpa-deployment-name, or specify custom name
+  namespace: ""  # Leave empty to use: namespace.name -> deployment.name -> default
+  labels: {}  # Additional labels for HPA
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# Namespace creation (optional)
+namespace:
+  create: false
+  name: ""  # Leave empty to use: namespace.name -> deployment.name -> default

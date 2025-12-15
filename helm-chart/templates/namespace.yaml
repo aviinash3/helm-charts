@@ -1,0 +1,10 @@
+{{- if .Values.namespace.create }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ include "demo-app.namespace" . }}
+  labels:
+    {{- include "demo-app.labels" . | nindent 4 }}
+    name: {{ include "demo-app.namespace" . }}
+{{- end }}
+

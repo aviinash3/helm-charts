@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: echo-vs
+  namespace: core
+spec:
+  hosts:
+    - "ingress.dev.aks.wsi.internal"
+  gateways:
+    - aks-istio-ingress/internal-cluster-gw
+  http:
+    - match:
+        - uri:
+            prefix: /echo
+      route:
+        - destination:
+            host: echo.core.svc.cluster.local
+            port:
+              number: 8080
