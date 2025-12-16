@@ -64,15 +64,3 @@ Create image name
 {{- end }}
 {{- end }}
 
-{{/*
-Create namespace
-*/}}
-{{- define "demo-app.namespace" -}}
-{{- if .Values.namespace.create }}
-{{- .Values.namespace.name }}
-{{- else }}
-{{- default "default" .Values.namespace.name }}
-{{- end }}
-{{- end }}
-
-

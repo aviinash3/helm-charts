@@ -58,14 +58,3 @@ Create image name
 {{- printf "%s:%s" .Values.image.repository .Values.image.tag }}
 {{- end }}
 
-{{/*
-Create namespace
-*/}}
-{{- define "generic-deployment.namespace" -}}
-{{- if .Values.namespace.create }}
-{{- .Values.namespace.name }}
-{{- else }}
-{{- default "default" .Values.namespace.name }}
-{{- end }}
-{{- end }}
-

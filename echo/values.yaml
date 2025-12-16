@@ -45,10 +45,10 @@ container:
     # - -c
     # - echo "Starting app"
   
-  # Args to pass to command (optional - leave empty if not needed)
-  args:
-    - -text="Hello, World!"
+  # Args to pass to command (optional - leave empty [] to use image default)
+  args: []
     # Example:
+    # - -text="Hello, World!"
     # - --port=8080
   
   # Environment variables (optional)
@@ -83,7 +83,7 @@ resources:
 service:
   enabled: true
   name: ""  # Leave empty to use deployment name, or specify custom name
-  namespace: ""  # Leave empty to use: namespace.name -> deployment.name -> default
+  namespace: ""  # Leave empty to use deployment.namespace
   type: ""  # Leave empty to default to ClusterIP, or specify: ClusterIP, NodePort, LoadBalancer
   port: 8080
   targetPort: 5678  # Should match container port if ports are defined
@@ -96,7 +96,7 @@ service:
 virtualService:
   enabled: true
   name: ""  # Leave empty to use: deployment-name-vs, or specify custom name
-  namespace: ""  # Leave empty to use: namespace.name -> deployment.name -> default
+  namespace: ""  # Leave empty to use deployment.namespace
   labels: {}  # Additional labels for VirtualService
   hosts: []  # Leave empty to use default: ["ingress.dev.aks.wsi.internal"]
     # Example:
@@ -120,14 +120,10 @@ virtualService:
 autoscaling:
   enabled: false
   name: ""  # Leave empty to use: hpa-deployment-name, or specify custom name
-  namespace: ""  # Leave empty to use: namespace.name -> deployment.name -> default
+  namespace: ""  # Leave empty to use deployment.namespace
   labels: {}  # Additional labels for HPA
   minReplicas: 1
   maxReplicas: 10
   targetCPUUtilizationPercentage: 70
   targetMemoryUtilizationPercentage: 80
 
-# Namespace creation (optional)
-namespace:
-  create: false
-  name: ""  # Leave empty to use: namespace.name -> deployment.name -> default

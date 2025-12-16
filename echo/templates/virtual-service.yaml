@@ -3,7 +3,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: {{ printf "%s-vs" (.Values.virtualService.name | default (.Values.deployment.name | default .Release.Name)) }}
-  namespace: {{ .Values.virtualService.namespace | default (.Values.namespace.name | default .Values.deployment.namespace) }}
+  namespace: {{ .Values.virtualService.namespace | default .Values.deployment.namespace }}
   labels:
     app: {{ .Values.deployment.name | default .Release.Name }}
     {{- if .Values.virtualService.labels }}
@@ -29,7 +29,7 @@ spec:
       route:
         {{- range .route }}
         - destination:
-            host: {{ if .destination.host }}{{ .destination.host }}{{ else }}{{ $.Values.service.name | default ($.Values.deployment.name | default $.Release.Name) }}.{{ $.Values.service.namespace | default ($.Values.namespace.name | default $.Values.deployment.namespace) }}.svc.cluster.local{{ end }}
+            host: {{ if .destination.host }}{{ .destination.host }}{{ else }}{{ $.Values.service.name | default ($.Values.deployment.name | default $.Release.Name) }}.{{ $.Values.service.namespace | default $.Values.deployment.namespace }}.svc.cluster.local{{ end }}
             port:
               number: {{ .destination.port.number | default $.Values.service.port }}
         {{- end }}

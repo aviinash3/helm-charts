@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.service.name | default (.Values.deployment.name | default .Release.Name) }}
-  namespace: {{ .Values.service.namespace | default (.Values.namespace.name | default .Values.deployment.namespace) }}
+  namespace: {{ .Values.service.namespace | default .Values.deployment.namespace }}
   labels:
     app: {{ .Values.deployment.name | default .Release.Name }}
     {{- if .Values.service.labels }}

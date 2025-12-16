@@ -6,9 +6,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 # Namespace configuration
-namespace:
-  create: true
-  name: demo-app
+namespace: demo-app
 
 # Image configuration
 image:

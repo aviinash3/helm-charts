@@ -1,0 +1,42 @@
+deployment:
+  name: "echo-dev"
+  namespace: "dev"
+image:
+  repository: nginx
+  tag: "latest"
+container:
+  ports:
+    - name: http
+      containerPort: 5678
+      protocol: TCP
+service:
+  enabled: true
+  name: "echo-dev-service"
+  namespace: "dev"
+  type: ClusterIP
+  port: 8080
+  targetPort: 5678
+  protocol: TCP
+
+virtualService:
+  enabled: true
+  name: "echo-dev"
+  namespace: "dev"
+  labels:
+    environment: "dev"
+    team: "platform"
+  hosts:
+    - "echo-dev.example.com"
+    - "dev.echo.internal"
+  gateways:
+    - aks-istio-ingress/dev-cluster-gw
+  http:
+    - match:
+        - uri:
+            prefix: /echo
+      route:
+        - destination:
+            host: ""
+            port:
+              number: 8080
+
