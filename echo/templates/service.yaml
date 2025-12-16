@@ -21,6 +21,6 @@ spec:
   ports:
     - name: {{ .Values.service.protocol | lower }}
       port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+      targetPort: {{ if and .Values.container.ports (gt (len .Values.container.ports) 0) }}{{ (index .Values.container.ports 0).containerPort }}{{ else }}{{ .Values.service.targetPort | default 5678 }}{{ end }}
       protocol: {{ .Values.service.protocol }}
 {{- end }}

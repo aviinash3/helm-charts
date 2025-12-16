@@ -86,7 +86,7 @@ service:
   namespace: ""  # Leave empty to use deployment.namespace
   type: ""  # Leave empty to default to ClusterIP, or specify: ClusterIP, NodePort, LoadBalancer
   port: 8080
-  targetPort: 5678  # Should match container port if ports are defined
+  targetPort: 5678  # Fallback only: automatically uses container.ports[0].containerPort if container.ports is defined
   protocol: TCP
   annotations: {}
   sessionAffinity: None
