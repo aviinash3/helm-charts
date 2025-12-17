@@ -107,10 +107,8 @@ virtualService:
     # - aks-istio-ingress/internal-cluster-gw
     # - another-gateway/namespace
   http:
-    - match:
-        - uri:
-            prefix: /echo
-      route:
+    # match: automatically uses /{deployment-name} prefix if not provided
+    - route:
         - destination:
             host: ""  # Leave empty to auto-generate: service-name.namespace.svc.cluster.local, or specify custom host
             port:

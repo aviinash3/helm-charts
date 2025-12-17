@@ -1,5 +1,4 @@
 deployment:
-  name: "echo-dev"
   namespace: "dev"
 image:
   repository: nginx
@@ -9,20 +8,18 @@ container:
     - name: http
       containerPort: 80
       protocol: TCP
-service:
-  enabled: true
-  type: ClusterIP
-  port: 8080
-  protocol: TCP
+# service:
+#   enabled: true
+#   type: ClusterIP
+#   port: 8080
+#   protocol: TCP
 
-virtualService:
-  enabled: true
-  http:
-    - match:
-        - uri:
-            prefix: /echo
-      route:
-        - destination:
-            host: ""
-            port:
-              number: 8080
+# virtualService:
+#   enabled: true
+#   # match: automatically uses /{deployment-name}/ prefix if not provided
+#   http:
+#     - route:
+#         - destination:
+#             host: ""
+#             port:
+#               number: 8080

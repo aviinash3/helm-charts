@@ -25,7 +25,23 @@ spec:
   http:
     {{- range .Values.virtualService.http }}
     - match:
+        {{- if .match }}
+        {{- $matchProvided := false }}
+        {{- range .match }}
+        {{- if .uri.prefix }}
+        {{- $matchProvided = true }}
+        {{- end }}
+        {{- end }}
+        {{- if $matchProvided }}
         {{- toYaml .match | nindent 8 }}
+        {{- else }}
+        - uri:
+            prefix: {{ printf "/%s" ($.Values.deployment.name | default $.Release.Name) }}
+        {{- end }}
+        {{- else }}
+        - uri:
+            prefix: {{ printf "/%s" ($.Values.deployment.name | default $.Release.Name) }}
+        {{- end }}
       route:
         {{- range .route }}
         - destination:
